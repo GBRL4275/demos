@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CF Global Cargo - Importaciones desde China y el Mundo a Bolivia</title>
+    <!-- Tailwind CSS por CDN (Sin instalaciones complejas) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-white min-h-screen font-sans selection:bg-orange-500 selection:text-white">
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-3">
+                <span class="text-xl font-black tracking-wider text-orange-500">CF GLOBAL CARGO</span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-7 text-sm font-semibold tracking-wide">
+                <a href="#cotizador-fcl" class="text-orange-400 hover:text-orange-300 transition">COTIZAR CONTENEDOR / M³</a>
+                <a href="#catalogo" class="text-slate-300 hover:text-orange-400 transition">CATÁLOGO BOLIVIA</a>
+                <a href="#servicios" class="text-slate-300 hover:text-orange-400 transition">SERVICIOS</a>
+            </div>
+
+            <div class="hidden md:block">
+                <a href="#cotizador-fcl" class="bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition shadow-lg shadow-orange-500/20">
+                    Calculadora Logística
+                </a>
+            </div>
+
+            <button onclick="toggleMobileMenu()" class="md:hidden text-slate-300 p-2">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Menú Móvil -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-900 border-b border-slate-800 px-6 py-6 space-y-4">
+            <a href="#cotizador-fcl" onclick="toggleMobileMenu()" class="block text-orange-400 font-bold">Cotizador Contenedores / m³</a>
+            <a href="#catalogo" onclick="toggleMobileMenu()" class="block text-slate-300 font-medium">Catálogo Bolivia</a>
+            <a href="#servicios" onclick="toggleMobileMenu()" class="block text-slate-300 font-medium">Servicios</a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="relative pt-32 pb-16 md:pt-40 md:pb-24 overflow-hidden bg-gradient-to-b from-slate-950 via-blue-950/40 to-slate-950">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <div class="inline-flex items-center gap-2 bg-orange-500/10 text-orange-400 px-4 py-2 rounded-full text-xs md:text-sm font-semibold mb-6 border border-orange-500/30">
+                    <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                    Especialistas en FCL, LCL y Catálogo puesto en Bolivia
+                </div>
+
+                <h1 class="text-4xl md:text-6xl font-black leading-tight tracking-tight mb-6">
+                    Trae tu Contenedor o Mercadería con <span class="text-orange-500">Rentabilidad Real</span>
+                </h1>
+
+                <p class="text-lg text-slate-300 leading-relaxed mb-8">
+                    Cotiza contenedores completos (20', 40' y 40'HQ) y consolidación por metro cúbico (m³) desde cualquier puerto de China hacia Bolivia. O adquiere productos de catálogo por unidad y caja con precio total cerrado.
+                </p>
+
+                <div class="flex flex-wrap gap-4">
+                    <a href="#cotizador-fcl" class="bg-orange-500 hover:bg-orange-600 transition px-8 py-4 rounded-xl font-bold text-lg shadow-xl shadow-orange-500/25 flex items-center gap-2">
+                        <span>Cotizar Contenedor / m³</span>
+                    </a>
+                    <a href="#catalogo" class="border border-slate-700 hover:border-orange-500 hover:bg-slate-900/50 px-8 py-4 rounded-xl font-semibold transition">
+                        Ver Catálogo por Unidad/Caja
+                    </a>
+                </div>
+            </div>
+
+            <div class="relative flex justify-center">
+                <div class="bg-slate-900/80 border border-slate-800 p-8 rounded-3xl backdrop-blur-sm shadow-2xl flex flex-col items-center text-center">
+                    <div class="text-3xl font-black text-orange-500 mb-2">CF GLOBAL CARGO</div>
+                    <p class="text-slate-400 text-sm">Logística Internacional y Aduana Directa</p>
+                    <div class="mt-6 text-center border-t border-slate-800 pt-4 w-full">
+                        <p class="text-slate-400 text-xs font-medium">Del mundo a Bolivia por puertos de Iquique y Arica</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COTIZADOR INTERACTIVO -->
+    <section id="cotizador-fcl" class="py-20 px-6 max-w-7xl mx-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+            <div class="max-w-3xl mb-10">
+                <span class="text-orange-400 uppercase tracking-widest text-xs font-bold">Paso 1: Parámetros Logísticos</span>
+                <h2 class="text-3xl md:text-4xl font-black mt-2">Cotizador de Contenedores y Carga por m³ (CBM)</h2>
+                <p class="text-slate-400 text-sm mt-2">Selecciona el país de origen, marca los puertos de carga en China y define el volumen exacto.</p>
+            </div>
+
+            <form onsubmit="enviarCotizacion(event)" class="space-y-8">
+                <!-- País de Origen -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-300 mb-3">1. País de Origen de la Carga:</label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <button type="button" onclick="setOrigen('China')" id="btn-china" class="py-3 px-4 rounded-xl border text-sm font-semibold transition border-orange-500 bg-orange-500/10 text-orange-400">China</button>
+                        <button type="button" onclick="setOrigen('Chile (Iquique / Zofri)')" id="btn-iquique" class="py-3 px-4 rounded-xl border text-sm font-semibold transition border-slate-800 bg-slate-950 text-slate-400">Chile (Iquique)</button>
+                        <button type="button" onclick="setOrigen('Chile (Arica)')" id="btn-arica" class="py-3 px-4 rounded-xl border text-sm font-semibold transition border-slate-800 bg-slate-950 text-slate-400">Chile (Arica)</button>
+                        <button type="button" onclick="setOrigen('Otro País')" id="btn-otro" class="py-3 px-4 rounded-xl border text-sm font-semibold transition border-slate-800 bg-slate-950 text-slate-400">Otro País</button>
+                    </div>
+                </div>
+
+                <!-- Puertos de China -->
+                <div id="seccion-puertos" class="bg-slate-950/70 border border-slate-800/80 p-6 rounded-2xl">
+                    <div class="flex justify-between items-center mb-3">
+                        <label class="text-sm font-bold text-slate-200">2. Selecciona los Puertos de Salida en China:</label>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                        <label class="p-3 rounded-xl border border-orange-500 bg-orange-500/20 text-white text-xs font-semibold flex items-center justify-between cursor-pointer">
+                            <span>Ningbo</span> <input type="checkbox" value="Ningbo" checked onchange="togglePuerto(this)" class="accent-orange-500">
+                        </label>
+                        <label class="p-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-semibold flex items-center justify-between cursor-pointer">
+                            <span>Yiwu</span> <input type="checkbox" value="Yiwu" onchange="togglePuerto(this)" class="accent-orange-500">
+                        </label>
+                        <label class="p-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-semibold flex items-center justify-between cursor-pointer">
+                            <span>Guangzhou / Nansha</span> <input type="checkbox" value="Guangzhou / Nansha" onchange="togglePuerto(this)" class="accent-orange-500">
+                        </label>
+                        <label class="p-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-semibold flex items-center justify-between cursor-pointer">
+                            <span>Shenzhen (Yantian)</span> <input type="checkbox" value="Shenzhen (Yantian/Shekou)" onchange="togglePuerto(this)" class="accent-orange-500">
+                        </label>
+                        <label class="p-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-semibold flex items-center justify-between cursor-pointer">
+                            <span>Shanghai</span> <input type="checkbox" value="Shanghai" onchange="togglePuerto(this)" class="accent-orange-500">
+                        </label>
+                        <label class="p-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-semibold flex items-center justify-between cursor-pointer">
+                            <span>Qingdao</span> <input type="checkbox" value="Qingdao" onchange="togglePuerto(this)" class="accent-orange-500">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Tipo de Contenedor -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-300 mb-3">3. Tipo de Contenedor y Capacidad:</label>
+                    <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+                        <div onclick="setTipoCarga('20GP')" id="card-20GP" class="cursor-pointer p-5 rounded-2xl border border-slate-800 bg-slate-950">
+                            <h4 class="text-lg font-bold">20' GP</h4>
+                            <div class="mt-2 text-xl font-black text-white">~28 a 30 m³</div>
+                        </div>
+                        <div onclick="setTipoCarga('40GP')" id="card-40GP" class="cursor-pointer p-5 rounded-2xl border border-slate-800 bg-slate-950">
+                            <h4 class="text-lg font-bold">40' GP</h4>
+                            <div class="mt-2 text-xl font-black text-white">~56 a 58 m³</div>
+                        </div>
+                        <div onclick="setTipoCarga('40HQ')" id="card-40HQ" class="cursor-pointer p-5 rounded-2xl border border-orange-500 bg-orange-500/10">
+                            <h4 class="text-lg font-bold">40' HQ (Recomendado)</h4>
+                            <div class="mt-2 text-xl font-black text-white">~68 a 70 m³</div>
+                        </div>
+                        <div onclick="setTipoCarga('LCL')" id="card-LCL" class="cursor-pointer p-5 rounded-2xl border border-slate-800 bg-slate-950">
+                            <h4 class="text-lg font-bold">Carga LCL (m³)</h4>
+                            <div class="mt-2 text-xl font-black text-white">CBM Suelto</div>
+                        </div>
+                    </div>
+
+                    <!-- Input LCL -->
+                    <div id="input-lcl-container" class="hidden mt-4 p-5 bg-slate-950 border border-blue-500/30 rounded-2xl">
+                        <label class="text-sm font-bold text-slate-200 block mb-2">Metros Cúbicos (m³ / CBM) estimados:</label>
+                        <input type="number" id="metros-lcl" step="0.1" placeholder="Ej. 4.5" class="w-full md:w-48 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-bold">
+                    </div>
+                </div>
+
+                <!-- Destino Bolivia -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-300 mb-2">4. Aduana de Llegada / Ciudad en Bolivia:</label>
+                    <select id="destino-bolivia" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-200 font-semibold">
+                        <option value="Oruro (Oficina Central / Aduana)">Oruro (Oficina Central / Aduana Interior)</option>
+                        <option value="La Paz / El Alto">La Paz / El Alto</option>
+                        <option value="Cochabamba">Cochabamba</option>
+                        <option value="Santa Cruz">Santa Cruz</option>
+                    </select>
+                </div>
+
+                <!-- Tipo de mercancía -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-300 mb-2">5. Tipo de Mercancía:</label>
+                    <input type="text" id="tipo-mercancia" placeholder="Ej. Electrónica, Ropa, Maquinaria..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white font-semibold">
+                </div>
+
+                <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-black py-4 rounded-xl transition shadow-lg shadow-orange-500/30 text-lg">
+                    Cotizar por WhatsApp Ahora 🚀
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- CATÁLOGO DE PRODUCTOS -->
+    <section id="catalogo" class="py-20 px-6 max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
+            <div>
+                <span class="text-orange-400 uppercase tracking-widest text-xs font-bold">Stock Puesto en Bolivia</span>
+                <h2 class="text-3xl md:text-4xl font-black mt-2">Catálogo de Oportunidades</h2>
+            </div>
+            <!-- Filtros de categoría -->
+            <div class="flex flex-wrap gap-2">
+                <button onclick="filtrarCategoria('todos')" class="cat-btn bg-orange-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Todos</button>
+                <button onclick="filtrarCategoria('herramientas')" class="cat-btn bg-slate-900 text-slate-400 px-4 py-2 rounded-xl text-xs font-bold transition">Herramientas</button>
+                <button onclick="filtrarCategoria('tecnologia')" class="cat-btn bg-slate-900 text-slate-400 px-4 py-2 rounded-xl text-xs font-bold transition">Tecnología</button>
+                <button onclick="filtrarCategoria('hogar')" class="cat-btn bg-slate-900 text-slate-400 px-4 py-2 rounded-xl text-xs font-bold transition">Hogar</button>
+            </div>
+        </div>
+
+        <div id="grid-productos" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Los productos se inyectan dinámicamente con JavaScript -->
+        </div>
+    </section>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let paisOrigen = 'China';
+        let puertosSeleccionados = ['Ningbo'];
+        let tipoCarga = '40HQ';
+        let categoriaActual = 'todos';
+        const whatsappNumber = "59160423791";
+
+        const productos = [
+            { id: 1, nombre: "Taladros Inalámbricos 21V", categoria: "herramientas", imagen: "https://images.unsplash.com/photo-1504148455328-c376907d081c?q=80&w=800", unidadesPorCaja: 10, precioUnidad: "155 Bs", precioCaja: "1,450 Bs" },
+            { id: 2, nombre: "Smartwatch Ultra Deportivo Serie 9", categoria: "tecnologia", imagen: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?q=80&w=800", unidadesPorCaja: 50, precioUnidad: "55 Bs", precioCaja: "2,250 Bs" },
+            { id: 3, nombre: "Lámparas Solares LED 200W", categoria: "hogar", imagen: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?q=80&w=800", unidadesPorCaja: 20, precioUnidad: "98 Bs", precioCaja: "1,700 Bs" },
+            { id: 4, nombre: "Mini Compresores Portátiles 12V", categoria: "herramientas", imagen: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=800", unidadesPorCaja: 30, precioUnidad: "75 Bs", precioCaja: "1,800 Bs" }
+        ];
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function setOrigen(pais) {
+            paisOrigen = pais;
+            ['china', 'iquique', 'arica', 'otro'].forEach(p => {
+                const btn = document.getElementById(`btn-${p}`);
+                if(btn) {
+                    btn.className = "py-3 px-4 rounded-xl border text-sm font-semibold transition border-slate-800 bg-slate-950 text-slate-400";
+                }
+            });
+            const activo = event.target;
+            activo.className = "py-3 px-4 rounded-xl border text-sm font-semibold transition border-orange-500 bg-orange-500/10 text-orange-400";
+            
+            const seccionPuertos = document.getElementById('seccion-puertos');
+            if (pais === 'China') {
+                seccionPuertos.classList.remove('hidden');
+            } else {
+                seccionPuertos.classList.add('hidden');
+            }
+        }
+
+        function togglePuerto(checkbox) {
+            if(checkbox.checked) {
+                if(!puertosSeleccionados.includes(checkbox.value)) puertosSeleccionados.push(checkbox.value);
+            } else {
+                puertosSeleccionados = puertosSeleccionados.filter(p => p !== checkbox.value);
+            }
+        }
+
+        function setTipoCarga(tipo) {
+            tipoCarga = tipo;
+            ['20GP', '40GP', '40HQ', 'LCL'].forEach(t => {
+                const card = document.getElementById(`card-${t}`);
+                card.className = "cursor-pointer p-5 rounded-2xl border border-slate-800 bg-slate-950";
+            });
+            document.getElementById(`card-${tipo}`).className = "cursor-pointer p-5 rounded-2xl border border-orange-500 bg-orange-500/10";
+            
+            const lclContainer = document.getElementById('input-lcl-container');
+            if(tipo === 'LCL') {
+                lclContainer.classList.remove('hidden');
+            } else {
+                lclContainer.classList.add('hidden');
+            }
+        }
+
+        function enviarCotizacion(e) {
+            e.preventDefault();
+            const metrosLCL = document.getElementById('metros-lcl').value;
+            const destino = document.getElementById('destino-bolivia').value;
+            const mercancia = document.getElementById('tipo-mercancia').value || 'Por especificar';
+
+            let detalleCarga = tipoCarga === 'LCL' ? `Consolidado LCL (${metrosLCL || '0'} m³)` : `Contenedor ${tipoCarga}`;
+            let puertosTexto = paisOrigen === 'China' ? `Puertos: ${puertosSeleccionados.join(', ') || 'A definir'}` : `Origen: ${paisOrigen}`;
+
+            const mensaje = `Hola CF Global Cargo, deseo cotizar flete internacional:\n- Origen: ${paisOrigen} (${puertosTexto})\n- Modalidad: ${detalleCarga}\n- Destino en Bolivia: ${destino}\n- Mercancía: ${mercancia}`;
+            window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
+
+        function filtrarCategoria(cat) {
+            categoriaActual = cat;
+            document.querySelectorAll('.cat-btn').forEach(b => {
+                b.className = "cat-btn bg-slate-900 text-slate-400 px-4 py-2 rounded-xl text-xs font-bold transition";
+            });
+            event.target.className = "cat-btn bg-orange-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition";
+            renderProductos();
+        }
+
+        function renderProductos() {
+            const grid = document.getElementById('grid-productos');
+            const filtrados = categoriaActual === 'todos' ? productos : productos.filter(p => p.categoria === categoriaActual);
+            
+            grid.innerHTML = filtrados.map(p => `
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between">
+                    <img src="${p.imagen}" alt="${p.nombre}" class="w-full h-48 object-cover">
+                    <div class="p-5 flex flex-col flex-grow justify-between">
+                        <div>
+                            <span class="text-[10px] uppercase font-bold text-orange-400 bg-orange-500/10 px-2.5 py-1 rounded-full">${p.categoria}</span>
+                            <h3 class="font-bold text-base mt-2 mb-3 text-slate-100">${p.nombre}</h3>
+                        </div>
+                        <div class="border-t border-slate-800 pt-4 mt-2">
+                            <div class="flex justify-between text-sm mb-3">
+                                <span class="text-slate-400">Por Unidad: <strong class="text-white">${p.precioUnidad}</strong></span>
+                                <span class="text-slate-400">Caja (${p.unidadesPorCaja} u): <strong class="text-orange-400">${p.precioCaja}</strong></span>
+                            </div>
+                            <button onclick="cotizarProducto(${p.id})" class="w-full bg-slate-800 hover:bg-orange-500 hover:text-white text-slate-200 font-bold py-2.5 rounded-xl text-xs transition">
+                                Pedir por WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function cotizarProducto(id) {
+            const p = productos.find(prod => prod.id === id);
+            const mensaje = `Hola CF Global Cargo, deseo adquirir del Catálogo Bolivia:\n- Producto: ${p.nombre}\n- Presentación: Caja completa (${p.unidadesPorCaja} unidades por ${p.precioCaja}) o Unidad (${p.precioUnidad}). Por favor confirmar disponibilidad.`;
+            window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
+
+        renderProductos();
+    </script>
+</body>
+</html>
