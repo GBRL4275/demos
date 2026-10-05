@@ -1,327 +1,1077 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CF Global Cargo - Importaciones desde China y el Mundo a Bolivia</title>
-    <!-- Tailwind CSS por CDN (Sin instalaciones complejas) -->
+    <title>Glow & Glamour - POS & Inventario de Cosméticos</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        roseGold: {
+                            50: '#fdf8f6',
+                            100: '#fbe8e6',
+                            200: '#f5d3cf',
+                            300: '#ebb5af',
+                            400: '#e08c82',
+                            500: '#d16659',
+                            600: '#bc4e42',
+                            700: '#9d3f34',
+                            800: '#82372f',
+                            900: '#6c322b',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for clean aesthetics */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d16659;
+            border-radius: 3px;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printable-receipt, #printable-receipt * {
+                visibility: visible;
+            }
+            #printable-receipt {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+    </style>
 </head>
-<body class="bg-slate-950 text-white min-h-screen font-sans selection:bg-orange-500 selection:text-white">
+<body class="bg-roseGold-50 text-gray-800 font-sans min-h-screen flex flex-col">
 
-    <!-- NAVBAR -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <a href="#" class="flex items-center gap-3">
-                <span class="text-xl font-black tracking-wider text-orange-500">CF GLOBAL CARGO</span>
-            </a>
-
-            <div class="hidden md:flex items-center gap-7 text-sm font-semibold tracking-wide">
-                <a href="#cotizador-fcl" class="text-orange-400 hover:text-orange-300 transition">COTIZAR CONTENEDOR / M³</a>
-                <a href="#catalogo" class="text-slate-300 hover:text-orange-400 transition">CATÁLOGO BOLIVIA</a>
-                <a href="#servicios" class="text-slate-300 hover:text-orange-400 transition">SERVICIOS</a>
+    <header class="bg-white border-b border-roseGold-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-roseGold-500 text-white p-2 rounded-xl shadow-md">
+                        <i class="fa-solid fa-wand-magic-sparkles text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold tracking-tight text-gray-900">Glow & <span class="text-roseGold-600">Glamour</span></span>
+                        <p class="text-xs text-gray-500">POS & Inventario de Belleza</p>
+                    </div>
+                </div>
+                <!-- Navigation Tabs -->
+                <nav class="hidden md:flex space-x-1 lg:space-x-2">
+                    <button onclick="switchTab('pos')" id="nav-pos" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-roseGold-500 text-white shadow-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-cash-register"></i>
+                        <span>Punto de Venta</span>
+                    </button>
+                    <button onclick="switchTab('inventory')" id="nav-inventory" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-roseGold-600 hover:bg-roseGold-50 transition-colors flex items-center space-x-2">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                        <span>Inventario</span>
+                    </button>
+                    <button onclick="switchTab('history')" id="nav-history" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-roseGold-600 hover:bg-roseGold-50 transition-colors flex items-center space-x-2">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <span>Ventas</span>
+                    </button>
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-roseGold-600 hover:bg-roseGold-50 transition-colors flex items-center space-x-2">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Resumen</span>
+                    </button>
+                </nav>
+                <div class="flex items-center space-x-3">
+                    <span id="current-time" class="text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full hidden sm:inline-block"></span>
+                    <button onclick="resetData()" title="Restaurar datos de prueba" class="p-2 text-gray-400 hover:text-roseGold-600 rounded-full hover:bg-roseGold-50 transition-colors">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
             </div>
-
-            <div class="hidden md:block">
-                <a href="#cotizador-fcl" class="bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition shadow-lg shadow-orange-500/20">
-                    Calculadora Logística
-                </a>
-            </div>
-
-            <button onclick="toggleMobileMenu()" class="md:hidden text-slate-300 p-2">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+        </div>
+        <!-- Mobile Navigation bar -->
+        <div class="md:hidden flex justify-around border-t border-roseGold-100 bg-white py-2 px-1">
+            <button onclick="switchTab('pos')" id="m-nav-pos" class="m-nav-btn flex flex-col items-center text-roseGold-600 text-xs font-medium px-2 py-1">
+                <i class="fa-solid fa-cash-register text-lg mb-0.5"></i>
+                <span>POS</span>
+            </button>
+            <button onclick="switchTab('inventory')" id="m-nav-inventory" class="m-nav-btn flex flex-col items-center text-gray-500 text-xs font-medium px-2 py-1">
+                <i class="fa-solid fa-boxes-stacked text-lg mb-0.5"></i>
+                <span>Inventario</span>
+            </button>
+            <button onclick="switchTab('history')" id="m-nav-history" class="m-nav-btn flex flex-col items-center text-gray-500 text-xs font-medium px-2 py-1">
+                <i class="fa-solid fa-clock-rotate-left text-lg mb-0.5"></i>
+                <span>Ventas</span>
+            </button>
+            <button onclick="switchTab('dashboard')" id="m-nav-dashboard" class="m-nav-btn flex flex-col items-center text-gray-500 text-xs font-medium px-2 py-1">
+                <i class="fa-solid fa-chart-pie text-lg mb-0.5"></i>
+                <span>Resumen</span>
             </button>
         </div>
+    </header>
 
-        <!-- Menú Móvil -->
-        <div id="mobile-menu" class="hidden md:hidden bg-slate-900 border-b border-slate-800 px-6 py-6 space-y-4">
-            <a href="#cotizador-fcl" onclick="toggleMobileMenu()" class="block text-orange-400 font-bold">Cotizador Contenedores / m³</a>
-            <a href="#catalogo" onclick="toggleMobileMenu()" class="block text-slate-300 font-medium">Catálogo Bolivia</a>
-            <a href="#servicios" onclick="toggleMobileMenu()" class="block text-slate-300 font-medium">Servicios</a>
-        </div>
-    </nav>
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
-    <!-- HERO SECTION -->
-    <section class="relative pt-32 pb-16 md:pt-40 md:pb-24 overflow-hidden bg-gradient-to-b from-slate-950 via-blue-950/40 to-slate-950">
-        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
-            <div>
-                <div class="inline-flex items-center gap-2 bg-orange-500/10 text-orange-400 px-4 py-2 rounded-full text-xs md:text-sm font-semibold mb-6 border border-orange-500/30">
-                    <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                    Especialistas en FCL, LCL y Catálogo puesto en Bolivia
+        <!-- VIEW 1: POS (Punto de Venta) -->
+        <section id="view-pos" class="tab-content grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Product Catalog (Left Column) -->
+            <div class="lg:col-span-7 xl:col-span-8 flex flex-col space-y-4">
+                <!-- Search & Filters -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-roseGold-100 flex flex-col sm:flex-row gap-3">
+                    <div class="relative flex-grow">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-gray-400"></i>
+                        <input type="text" id="pos-search" oninput="filterProducts()" placeholder="Buscar por nombre o SKU..." class="w-full pl-10 pr-4 py-2 bg-roseGold-50/50 border border-roseGold-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-roseGold-500 text-sm">
+                    </div>
+                    <div class="flex items-center space-x-2 overflow-x-auto pb-1 sm:pb-0">
+                        <button onclick="filterCategory('Todos')" id="cat-Todos" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-semibold bg-roseGold-500 text-white whitespace-nowrap shadow-sm transition-all">Todos</button>
+                        <button onclick="filterCategory('Maquillaje')" id="cat-Maquillaje" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-roseGold-100 whitespace-nowrap transition-all">Maquillaje</button>
+                        <button onclick="filterCategory('Skincare')" id="cat-Skincare" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-roseGold-100 whitespace-nowrap transition-all">Skincare</button>
+                        <button onclick="filterCategory('Capilar')" id="cat-Capilar" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-roseGold-100 whitespace-nowrap transition-all">Capilar</button>
+                        <button onclick="filterCategory('Perfumes')" id="cat-Perfumes" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-roseGold-100 whitespace-nowrap transition-all">Perfumes</button>
+                    </div>
                 </div>
 
-                <h1 class="text-4xl md:text-6xl font-black leading-tight tracking-tight mb-6">
-                    Trae tu Contenedor o Mercadería con <span class="text-orange-500">Rentabilidad Real</span>
-                </h1>
-
-                <p class="text-lg text-slate-300 leading-relaxed mb-8">
-                    Cotiza contenedores completos (20', 40' y 40'HQ) y consolidación por metro cúbico (m³) desde cualquier puerto de China hacia Bolivia. O adquiere productos de catálogo por unidad y caja con precio total cerrado.
-                </p>
-
-                <div class="flex flex-wrap gap-4">
-                    <a href="#cotizador-fcl" class="bg-orange-500 hover:bg-orange-600 transition px-8 py-4 rounded-xl font-bold text-lg shadow-xl shadow-orange-500/25 flex items-center gap-2">
-                        <span>Cotizar Contenedor / m³</span>
-                    </a>
-                    <a href="#catalogo" class="border border-slate-700 hover:border-orange-500 hover:bg-slate-900/50 px-8 py-4 rounded-xl font-semibold transition">
-                        Ver Catálogo por Unidad/Caja
-                    </a>
+                <!-- Product Grid -->
+                <div id="pos-product-grid" class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto max-h-[calc(100vh-260px)] pr-1">
+                    <!-- Dynamic Products injected via JS -->
                 </div>
             </div>
 
-            <div class="relative flex justify-center">
-                <div class="bg-slate-900/80 border border-slate-800 p-8 rounded-3xl backdrop-blur-sm shadow-2xl flex flex-col items-center text-center">
-                    <div class="text-3xl font-black text-orange-500 mb-2">CF GLOBAL CARGO</div>
-                    <p class="text-slate-400 text-sm">Logística Internacional y Aduana Directa</p>
-                    <div class="mt-6 text-center border-t border-slate-800 pt-4 w-full">
-                        <p class="text-slate-400 text-xs font-medium">Del mundo a Bolivia por puertos de Iquique y Arica</p>
+            <!-- Active Cart & Checkout (Right Column) -->
+            <div class="lg:col-span-5 xl:col-span-4 bg-white rounded-2xl shadow-sm border border-roseGold-100 flex flex-col h-[calc(100vh-130px)] sticky top-20">
+                <div class="p-4 border-b border-roseGold-100 flex justify-between items-center bg-roseGold-50/50 rounded-t-2xl">
+                    <h2 class="font-bold text-gray-800 flex items-center space-x-2">
+                        <i class="fa-solid fa-cart-shopping text-roseGold-600"></i>
+                        <span>Carrito Actual</span>
+                    </h2>
+                    <span id="cart-count-badge" class="bg-roseGold-500 text-white text-xs px-2.5 py-0.5 rounded-full font-semibold">0 items</span>
+                </div>
+
+                <!-- Cart Items List -->
+                <div id="cart-items-container" class="flex-grow overflow-y-auto p-4 space-y-3 divide-y divide-gray-100">
+                    <!-- Dynamic cart items or empty state -->
+                    <div class="flex flex-col items-center justify-center h-full text-gray-400 py-12">
+                        <i class="fa-solid fa-bag-shopping text-4xl mb-3 text-roseGold-200"></i>
+                        <p class="text-sm font-medium">El carrito está vacío</p>
+                        <p class="text-xs text-gray-400 mt-1">Selecciona productos para comenzar</p>
+                    </div>
+                </div>
+
+                <!-- Cart Summary & Checkout -->
+                <div class="p-4 bg-white border-t border-roseGold-100 rounded-b-2xl space-y-3 shadow-lg">
+                    <div class="space-y-1.5 text-sm">
+                        <div class="flex justify-between text-gray-600">
+                            <span>Subtotal</span>
+                            <span id="cart-subtotal">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-gray-600 items-center">
+                            <span>Descuento (%)</span>
+                            <input type="number" id="cart-discount" min="0" max="100" value="0" onchange="updateCartCalculations()" class="w-16 text-right px-2 py-1 bg-gray-50 border border-gray-200 rounded-lg text-xs font-medium focus:ring-1 focus:ring-roseGold-500">
+                        </div>
+                        <div class="flex justify-between text-gray-600">
+                            <span>Impuesto (13% IVA)</span>
+                            <span id="cart-tax">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-lg font-bold text-gray-900 pt-2 border-t border-gray-100">
+                            <span>Total a Pagar</span>
+                            <span id="cart-total" class="text-roseGold-600">$0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 pt-2">
+                        <button onclick="clearCart()" class="w-full py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl text-xs transition-colors flex items-center justify-center space-x-1">
+                            <i class="fa-solid fa-trash-can"></i>
+                            <span>Cancelar</span>
+                        </button>
+                        <button onclick="openCheckoutModal()" id="checkout-btn" disabled class="w-full py-2.5 px-4 bg-roseGold-500 hover:bg-roseGold-600 text-white font-medium rounded-xl text-xs transition-all shadow-sm opacity-50 cursor-not-allowed flex items-center justify-center space-x-1">
+                            <i class="fa-solid fa-credit-card"></i>
+                            <span>Cobrar</span>
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- COTIZADOR INTERACTIVO -->
-    <section id="cotizador-fcl" class="py-20 px-6 max-w-7xl mx-auto">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
-            <div class="max-w-3xl mb-10">
-                <span class="text-orange-400 uppercase tracking-widest text-xs font-bold">Paso 1: Parámetros Logísticos</span>
-                <h2 class="text-3xl md:text-4xl font-black mt-2">Cotizador de Contenedores y Carga por m³ (CBM)</h2>
-                <p class="text-slate-400 text-sm mt-2">Selecciona el país de origen, marca los puertos de carga en China y define el volumen exacto.</p>
+        <!-- VIEW 2: Inventario -->
+        <section id="view-inventory" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-roseGold-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900">Gestión de Inventario</h2>
+                    <p class="text-xs text-gray-500 mt-0.5">Administra tu catálogo de cosméticos, precios y stock disponible.</p>
+                </div>
+                <div class="flex items-center space-x-3 w-full sm:w-auto">
+                    <div class="relative flex-grow sm:w-64">
+                        <i class="fa-solid fa-search absolute left-3 top-3 text-gray-400 text-xs"></i>
+                        <input type="text" id="inventory-search" oninput="renderInventoryTable()" placeholder="Buscar en inventario..." class="w-full pl-9 pr-3 py-2 bg-roseGold-50/50 border border-roseGold-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-roseGold-500">
+                    </div>
+                    <button onclick="openProductModal()" class="bg-roseGold-500 hover:bg-roseGold-600 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-all shadow-sm flex items-center space-x-2 whitespace-nowrap">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Nuevo Producto</span>
+                    </button>
+                </div>
             </div>
 
-            <form onsubmit="enviarCotizacion(event)" class="space-y-8">
-                <!-- País de Origen -->
+            <!-- Inventory Table -->
+            <div class="bg-white rounded-2xl shadow-sm border border-roseGold-100 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-roseGold-50/70 border-b border-roseGold-100 text-xs uppercase text-gray-600 font-semibold tracking-wider">
+                                <th class="py-3.5 px-4">Producto</th>
+                                <th class="py-3.5 px-4">SKU</th>
+                                <th class="py-3.5 px-4">Categoría</th>
+                                <th class="py-3.5 px-4 text-right">Precio ($)</th>
+                                <th class="py-3.5 px-4 text-center">Stock</th>
+                                <th class="py-3.5 px-4 text-center">Estado</th>
+                                <th class="py-3.5 px-4 text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-table-body" class="divide-y divide-gray-100 text-sm">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: Historial de Ventas -->
+        <section id="view-history" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-roseGold-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <label class="block text-sm font-bold text-slate-300 mb-3">1. País de Origen de la Carga:</label>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        <button type="button" onclick="setOrigen('China')" id="btn-china" class="py-3 px-4 rounded-xl border text-sm font-semibold transition border-orange-500 bg-orange-500/10 text-orange-400">China</button>
-                        <button type="button" onclick="setOrigen('Chile (Iquique / Zofri)')" id="btn-iquique" class="py-3 px-4 rounded-xl border text-sm font-semibold transition border-slate-800 bg-slate-950 text-slate-400">Chile (Iquique)</button>
-                        <button type="button" onclick="setOrigen('Chile (Arica)')" id="btn-arica" class="py-3 px-4 rounded-xl border text-sm font-semibold transition border-slate-800 bg-slate-950 text-slate-400">Chile (Arica)</button>
-                        <button type="button" onclick="setOrigen('Otro País')" id="btn-otro" class="py-3 px-4 rounded-xl border text-sm font-semibold transition border-slate-800 bg-slate-950 text-slate-400">Otro País</button>
+                    <h2 class="text-xl font-bold text-gray-900">Historial de Ventas</h2>
+                    <p class="text-xs text-gray-500 mt-0.5">Registro detallado de transacciones y comprobantes emitidos.</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="clearSalesHistory()" class="px-4 py-2 bg-gray-100 hover:bg-red-50 hover:text-red-600 text-gray-600 text-xs font-semibold rounded-xl transition-colors flex items-center space-x-1.5">
+                        <i class="fa-solid fa-trash-can"></i>
+                        <span>Limpiar Historial</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-roseGold-100 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-roseGold-50/70 border-b border-roseGold-100 text-xs uppercase text-gray-600 font-semibold tracking-wider">
+                                <th class="py-3.5 px-4">ID Transacción</th>
+                                <th class="py-3.5 px-4">Fecha y Hora</th>
+                                <th class="py-3.5 px-4">Items Vendidos</th>
+                                <th class="py-3.5 px-4">Método Pago</th>
+                                <th class="py-3.5 px-4 text-right">Total ($)</th>
+                                <th class="py-3.5 px-4 text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sales-history-body" class="divide-y divide-gray-100 text-sm">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 4: Resumen / Dashboard -->
+        <section id="view-dashboard" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-roseGold-100">
+                <h2 class="text-xl font-bold text-gray-900">Resumen y Estadísticas</h2>
+                <p class="text-xs text-gray-500 mt-0.5">Métricas clave del rendimiento de tu negocio de cosméticos.</p>
+            </div>
+
+            <!-- Metric Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-roseGold-100 flex items-center space-x-4">
+                    <div class="p-3 bg-rose-50 text-roseGold-600 rounded-xl">
+                        <i class="fa-solid fa-sack-dollar text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-500">Ventas Totales Hoy</p>
+                        <h3 id="stat-sales-today" class="text-2xl font-bold text-gray-900 mt-1">$0.00</h3>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-roseGold-100 flex items-center space-x-4">
+                    <div class="p-3 bg-purple-50 text-purple-600 rounded-xl">
+                        <i class="fa-solid fa-bag-shopping text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-500">Productos Vendidos</p>
+                        <h3 id="stat-items-sold" class="text-2xl font-bold text-gray-900 mt-1">0</h3>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-roseGold-100 flex items-center space-x-4">
+                    <div class="p-3 bg-blue-50 text-blue-600 rounded-xl">
+                        <i class="fa-solid fa-receipt text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-500">Transacciones</p>
+                        <h3 id="stat-transactions" class="text-2xl font-bold text-gray-900 mt-1">0</h3>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-roseGold-100 flex items-center space-x-4">
+                    <div class="p-3 bg-amber-50 text-amber-600 rounded-xl">
+                        <i class="fa-solid fa-warehouse text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-500">Valor del Inventario</p>
+                        <h3 id="stat-inventory-val" class="text-2xl font-bold text-gray-900 mt-1">$0.00</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Products & Low Stock Alerts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Low Stock Alert Box -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-roseGold-100">
+                    <h3 class="font-bold text-gray-900 mb-4 flex items-center space-x-2">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-500"></i>
+                        <span>Alertas de Stock Bajo</span>
+                    </h3>
+                    <div id="low-stock-list" class="space-y-3">
+                        <!-- Populated via JS -->
                     </div>
                 </div>
 
-                <!-- Puertos de China -->
-                <div id="seccion-puertos" class="bg-slate-950/70 border border-slate-800/80 p-6 rounded-2xl">
-                    <div class="flex justify-between items-center mb-3">
-                        <label class="text-sm font-bold text-slate-200">2. Selecciona los Puertos de Salida en China:</label>
-                    </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                        <label class="p-3 rounded-xl border border-orange-500 bg-orange-500/20 text-white text-xs font-semibold flex items-center justify-between cursor-pointer">
-                            <span>Ningbo</span> <input type="checkbox" value="Ningbo" checked onchange="togglePuerto(this)" class="accent-orange-500">
-                        </label>
-                        <label class="p-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-semibold flex items-center justify-between cursor-pointer">
-                            <span>Yiwu</span> <input type="checkbox" value="Yiwu" onchange="togglePuerto(this)" class="accent-orange-500">
-                        </label>
-                        <label class="p-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-semibold flex items-center justify-between cursor-pointer">
-                            <span>Guangzhou / Nansha</span> <input type="checkbox" value="Guangzhou / Nansha" onchange="togglePuerto(this)" class="accent-orange-500">
-                        </label>
-                        <label class="p-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-semibold flex items-center justify-between cursor-pointer">
-                            <span>Shenzhen (Yantian)</span> <input type="checkbox" value="Shenzhen (Yantian/Shekou)" onchange="togglePuerto(this)" class="accent-orange-500">
-                        </label>
-                        <label class="p-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-semibold flex items-center justify-between cursor-pointer">
-                            <span>Shanghai</span> <input type="checkbox" value="Shanghai" onchange="togglePuerto(this)" class="accent-orange-500">
-                        </label>
-                        <label class="p-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-semibold flex items-center justify-between cursor-pointer">
-                            <span>Qingdao</span> <input type="checkbox" value="Qingdao" onchange="togglePuerto(this)" class="accent-orange-500">
-                        </label>
+                <!-- Quick Category Breakdown -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-roseGold-100">
+                    <h3 class="font-bold text-gray-900 mb-4 flex items-center space-x-2">
+                        <i class="fa-solid fa-chart-pie text-roseGold-600"></i>
+                        <span>Distribución por Categoría</span>
+                    </h3>
+                    <div id="category-stats-list" class="space-y-3">
+                        <!-- Populated via JS -->
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <!-- Tipo de Contenedor -->
-                <div>
-                    <label class="block text-sm font-bold text-slate-300 mb-3">3. Tipo de Contenedor y Capacidad:</label>
-                    <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
-                        <div onclick="setTipoCarga('20GP')" id="card-20GP" class="cursor-pointer p-5 rounded-2xl border border-slate-800 bg-slate-950">
-                            <h4 class="text-lg font-bold">20' GP</h4>
-                            <div class="mt-2 text-xl font-black text-white">~28 a 30 m³</div>
-                        </div>
-                        <div onclick="setTipoCarga('40GP')" id="card-40GP" class="cursor-pointer p-5 rounded-2xl border border-slate-800 bg-slate-950">
-                            <h4 class="text-lg font-bold">40' GP</h4>
-                            <div class="mt-2 text-xl font-black text-white">~56 a 58 m³</div>
-                        </div>
-                        <div onclick="setTipoCarga('40HQ')" id="card-40HQ" class="cursor-pointer p-5 rounded-2xl border border-orange-500 bg-orange-500/10">
-                            <h4 class="text-lg font-bold">40' HQ (Recomendado)</h4>
-                            <div class="mt-2 text-xl font-black text-white">~68 a 70 m³</div>
-                        </div>
-                        <div onclick="setTipoCarga('LCL')" id="card-LCL" class="cursor-pointer p-5 rounded-2xl border border-slate-800 bg-slate-950">
-                            <h4 class="text-lg font-bold">Carga LCL (m³)</h4>
-                            <div class="mt-2 text-xl font-black text-white">CBM Suelto</div>
-                        </div>
-                    </div>
+    </main>
 
-                    <!-- Input LCL -->
-                    <div id="input-lcl-container" class="hidden mt-4 p-5 bg-slate-950 border border-blue-500/30 rounded-2xl">
-                        <label class="text-sm font-bold text-slate-200 block mb-2">Metros Cúbicos (m³ / CBM) estimados:</label>
-                        <input type="number" id="metros-lcl" step="0.1" placeholder="Ej. 4.5" class="w-full md:w-48 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-bold">
-                    </div>
-                </div>
-
-                <!-- Destino Bolivia -->
-                <div>
-                    <label class="block text-sm font-bold text-slate-300 mb-2">4. Aduana de Llegada / Ciudad en Bolivia:</label>
-                    <select id="destino-bolivia" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-200 font-semibold">
-                        <option value="Oruro (Oficina Central / Aduana)">Oruro (Oficina Central / Aduana Interior)</option>
-                        <option value="La Paz / El Alto">La Paz / El Alto</option>
-                        <option value="Cochabamba">Cochabamba</option>
-                        <option value="Santa Cruz">Santa Cruz</option>
-                    </select>
-                </div>
-
-                <!-- Tipo de mercancía -->
-                <div>
-                    <label class="block text-sm font-bold text-slate-300 mb-2">5. Tipo de Mercancía:</label>
-                    <input type="text" id="tipo-mercancia" placeholder="Ej. Electrónica, Ropa, Maquinaria..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white font-semibold">
-                </div>
-
-                <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-black py-4 rounded-xl transition shadow-lg shadow-orange-500/30 text-lg">
-                    Cotizar por WhatsApp Ahora 🚀
+    <!-- CHECKOUT MODAL -->
+    <div id="checkout-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-roseGold-100 transform transition-all">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-900 flex items-center space-x-2">
+                    <i class="fa-solid fa-cash-register text-roseGold-600"></i>
+                    <span>Finalizar Venta / Cobro</span>
+                </h3>
+                <button onclick="closeCheckoutModal()" class="text-gray-400 hover:text-gray-600 p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-roseGold-50 p-4 rounded-2xl flex justify-between items-center">
+                    <span class="text-sm font-medium text-gray-600">Total a Pagar:</span>
+                    <span id="modal-total-display" class="text-2xl font-extrabold text-roseGold-600">$0.00</span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-2">Método de Pago</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="setPaymentMethod('Efectivo')" id="pay-efectivo" class="pay-method-btn py-2.5 px-3 rounded-xl text-xs font-semibold border-2 border-roseGold-500 bg-roseGold-50 text-roseGold-700 flex flex-col items-center space-y-1 transition-all">
+                            <i class="fa-solid fa-money-bill-wave text-base"></i>
+                            <span>Efectivo</span>
+                        </button>
+                        <button onclick="setPaymentMethod('Tarjeta')" id="pay-tarjeta" class="pay-method-btn py-2.5 px-3 rounded-xl text-xs font-semibold border-2 border-gray-200 bg-white text-gray-600 flex flex-col items-center space-y-1 transition-all">
+                            <i class="fa-solid fa-credit-card text-base"></i>
+                            <span>Tarjeta</span>
+                        </button>
+                        <button onclick="setPaymentMethod('Transferencia')" id="pay-transferencia" class="pay-method-btn py-2.5 px-3 rounded-xl text-xs font-semibold border-2 border-gray-200 bg-white text-gray-600 flex flex-col items-center space-y-1 transition-all">
+                            <i class="fa-solid fa-qrcode text-base"></i>
+                            <span>Transfer</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cash Tendered section -->
+                <div id="cash-input-section" class="space-y-2">
+                    <label class="block text-xs font-semibold text-gray-600">Efectivo Recibido</label>
+                    <input type="number" id="cash-tendered" oninput="calculateChange()" placeholder="0.00" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-roseGold-500 focus:outline-none font-semibold">
+                    <div class="flex justify-between text-xs text-gray-500 pt-1">
+                        <span>Cambio / Vuelto:</span>
+                        <span id="cash-change" class="font-bold text-gray-800">$0.00</span>
+                    </div>
+                </div>
+
+                <button onclick="processCheckout()" class="w-full py-3 bg-roseGold-500 hover:bg-roseGold-600 text-white font-bold rounded-xl text-sm transition-all shadow-md flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Confirmar y Emitir Recibo</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RECEIPT MODAL -->
+    <div id="receipt-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-roseGold-100 flex flex-col max-h-[90vh]">
+            <div id="printable-receipt" class="bg-white p-4 font-mono text-xs space-y-3 overflow-y-auto flex-grow">
+                <div class="text-center space-y-1">
+                    <h4 class="font-bold text-base font-sans tracking-wide text-roseGold-700">GLOW & GLAMOUR</h4>
+                    <p class="text-gray-500 text-[10px]">Cosméticos & Belleza Profesional</p>
+                    <p class="text-gray-500 text-[10px]">NIT: 123456789-0</p>
+                    <div class="border-b border-dashed border-gray-300 my-2"></div>
+                </div>
+                <div class="space-y-0.5 text-gray-600 text-[11px]">
+                    <div class="flex justify-between"><span>Transacción:</span> <span id="rec-id" class="font-bold"></span></div>
+                    <div class="flex justify-between"><span>Fecha:</span> <span id="rec-date"></span></div>
+                    <div class="flex justify-between"><span>Método Pago:</span> <span id="rec-payment"></span></div>
+                </div>
+                <div class="border-b border-dashed border-gray-300 my-2"></div>
+                <div>
+                    <div class="font-bold text-gray-700 mb-1">DETALLE DE PRODUCTOS</div>
+                    <div id="rec-items-list" class="space-y-1">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+                <div class="border-b border-dashed border-gray-300 my-2"></div>
+                <div class="space-y-1 text-[11px]">
+                    <div class="flex justify-between"><span>Subtotal:</span> <span id="rec-subtotal"></span></div>
+                    <div class="flex justify-between"><span>Descuento:</span> <span id="rec-discount"></span></div>
+                    <div class="flex justify-between"><span>IVA (13%):</span> <span id="rec-tax"></span></div>
+                    <div class="flex justify-between font-bold text-sm pt-1 border-t border-gray-200"><span>TOTAL:</span> <span id="rec-total" class="text-roseGold-600"></span></div>
+                </div>
+                <div class="border-b border-dashed border-gray-300 my-2"></div>
+                <div class="text-center text-[10px] text-gray-500 space-y-1 pt-1">
+                    <p>¡Gracias por tu compra!</p>
+                    <p class="italic">La belleza comienza en el momento en que decides ser tú misma.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 pt-4 border-t border-gray-100 mt-2">
+                <button onclick="window.print()" class="py-2.5 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl text-xs transition-colors flex items-center justify-center space-x-1">
+                    <i class="fa-solid fa-print"></i>
+                    <span>Imprimir</span>
+                </button>
+                <button onclick="closeReceiptModal()" class="py-2.5 px-3 bg-roseGold-500 hover:bg-roseGold-600 text-white font-semibold rounded-xl text-xs transition-colors flex items-center justify-center space-x-1">
+                    <i class="fa-solid fa-check"></i>
+                    <span>Cerrar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD/EDIT PRODUCT MODAL -->
+    <div id="product-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-roseGold-100">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="product-modal-title" class="text-lg font-bold text-gray-900 flex items-center space-x-2">
+                    <i class="fa-solid fa-box text-roseGold-600"></i>
+                    <span>Nuevo Producto</span>
+                </h3>
+                <button onclick="closeProductModal()" class="text-gray-400 hover:text-gray-600 p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="product-form" onsubmit="saveProduct(event)" class="space-y-4">
+                <input type="hidden" id="prod-edit-id">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Nombre del Producto</label>
+                    <input type="text" id="prod-name" required placeholder="Ej. Labial Líquido Mate" class="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-roseGold-500 focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">SKU / Código</label>
+                        <input type="text" id="prod-sku" required placeholder="Ej. MUP-005" class="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-roseGold-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Categoría</label>
+                        <select id="prod-category" class="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-roseGold-500 focus:outline-none">
+                            <option value="Maquillaje">Maquillaje</option>
+                            <option value="Skincare">Skincare</option>
+                            <option value="Capilar">Capilar</option>
+                            <option value="Perfumes">Perfumes</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Precio ($)</label>
+                        <input type="number" step="0.01" id="prod-price" required placeholder="0.00" class="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-roseGold-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Stock Inicial</label>
+                        <input type="number" id="prod-stock" required placeholder="0" class="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-roseGold-500 focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">URL de Imagen (Opcional)</label>
+                    <input type="url" id="prod-image" placeholder="https://ejemplo.com/imagen.jpg" class="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-roseGold-500 focus:outline-none">
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-3 bg-roseGold-500 hover:bg-roseGold-600 text-white font-bold rounded-xl text-sm transition-all shadow-md flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>Guardar Producto</span>
+                    </button>
+                </div>
             </form>
         </div>
-    </section>
+    </div>
 
-    <!-- CATÁLOGO DE PRODUCTOS -->
-    <section id="catalogo" class="py-20 px-6 max-w-7xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
-            <div>
-                <span class="text-orange-400 uppercase tracking-widest text-xs font-bold">Stock Puesto en Bolivia</span>
-                <h2 class="text-3xl md:text-4xl font-black mt-2">Catálogo de Oportunidades</h2>
-            </div>
-            <!-- Filtros de categoría -->
-            <div class="flex flex-wrap gap-2">
-                <button onclick="filtrarCategoria('todos')" class="cat-btn bg-orange-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Todos</button>
-                <button onclick="filtrarCategoria('herramientas')" class="cat-btn bg-slate-900 text-slate-400 px-4 py-2 rounded-xl text-xs font-bold transition">Herramientas</button>
-                <button onclick="filtrarCategoria('tecnologia')" class="cat-btn bg-slate-900 text-slate-400 px-4 py-2 rounded-xl text-xs font-bold transition">Tecnología</button>
-                <button onclick="filtrarCategoria('hogar')" class="cat-btn bg-slate-900 text-slate-400 px-4 py-2 rounded-xl text-xs font-bold transition">Hogar</button>
-            </div>
-        </div>
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-gray-900 text-white px-4 py-3 rounded-xl shadow-xl text-xs font-medium flex items-center space-x-2">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toast-message">Acción completada con éxito</span>
+    </div>
 
-        <div id="grid-productos" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <!-- Los productos se inyectan dinámicamente con JavaScript -->
-        </div>
-    </section>
-
-    <!-- JAVASCRIPT LOGIC -->
     <script>
-        let paisOrigen = 'China';
-        let puertosSeleccionados = ['Ningbo'];
-        let tipoCarga = '40HQ';
-        let categoriaActual = 'todos';
-        const whatsappNumber = "59160423791";
-
-        const productos = [
-            { id: 1, nombre: "Taladros Inalámbricos 21V", categoria: "herramientas", imagen: "https://images.unsplash.com/photo-1504148455328-c376907d081c?q=80&w=800", unidadesPorCaja: 10, precioUnidad: "155 Bs", precioCaja: "1,450 Bs" },
-            { id: 2, nombre: "Smartwatch Ultra Deportivo Serie 9", categoria: "tecnologia", imagen: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?q=80&w=800", unidadesPorCaja: 50, precioUnidad: "55 Bs", precioCaja: "2,250 Bs" },
-            { id: 3, nombre: "Lámparas Solares LED 200W", categoria: "hogar", imagen: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?q=80&w=800", unidadesPorCaja: 20, precioUnidad: "98 Bs", precioCaja: "1,700 Bs" },
-            { id: 4, nombre: "Mini Compresores Portátiles 12V", categoria: "herramientas", imagen: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=800", unidadesPorCaja: 30, precioUnidad: "75 Bs", precioCaja: "1,800 Bs" }
+        const DEFAULT_PRODUCTS = [
+            { id: 1, name: "Labial Líquido Mate Velvet", sku: "MUP-001", category: "Maquillaje", price: 18.50, stock: 25, image: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&auto=format&fit=crop&q=80" },
+            { id: 2, name: "Sérum Facial Ácido Hialurónico", sku: "SKN-001", category: "Skincare", price: 32.00, stock: 14, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&auto=format&fit=crop&q=80" },
+            { id: 3, name: "Paleta de Sombras Sunset Glow", sku: "MUP-002", category: "Maquillaje", price: 45.00, stock: 8, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400&auto=format&fit=crop&q=80" },
+            { id: 4, name: "Mascarilla Capilar Argán Repair", sku: "CAP-001", category: "Capilar", price: 24.00, stock: 30, image: "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=400&auto=format&fit=crop&q=80" },
+            { id: 5, name: "Eau de Parfum Rose Elegance", sku: "PER-001", category: "Perfumes", price: 75.00, stock: 10, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&auto=format&fit=crop&q=80" },
+            { id: 6, name: "Crema Hidratante con Vitamina C", sku: "SKN-002", category: "Skincare", price: 28.00, stock: 4, image: "https://images.unsplash.com/photo-1608248597359-974b12631526?w=400&auto=format&fit=crop&q=80" },
+            { id: 7, name: "Delineador de Ojos Waterproof", sku: "MUP-003", category: "Maquillaje", price: 14.00, stock: 0, image: "https://images.unsplash.com/photo-1631730486784-545611ddf177?w=400&auto=format&fit=crop&q=80" },
+            { id: 8, name: "Aceite Nutritivo Capilar Macadamia", sku: "CAP-002", category: "Capilar", price: 22.00, stock: 18, image: "https://images.unsplash.com/photo-1526947425960-945c6e72858f?w=400&auto=format&fit=crop&q=80" }
         ];
 
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
+        let state = {
+            products: JSON.parse(localStorage.getItem('gg_products')) || DEFAULT_PRODUCTS,
+            cart: JSON.parse(localStorage.getItem('gg_cart')) || [],
+            sales: JSON.parse(localStorage.getItem('gg_sales')) || [],
+            currentCategory: 'Todos',
+            currentPaymentMethod: 'Efectivo',
+            activeTab: 'pos'
+        };
+
+        function saveState() {
+            localStorage.setItem('gg_products', JSON.stringify(state.products));
+            localStorage.setItem('gg_cart', JSON.stringify(state.cart));
+            localStorage.setItem('gg_sales', JSON.stringify(state.sales));
         }
 
-        function setOrigen(pais) {
-            paisOrigen = pais;
-            ['china', 'iquique', 'arica', 'otro'].forEach(p => {
-                const btn = document.getElementById(`btn-${p}`);
-                if(btn) {
-                    btn.className = "py-3 px-4 rounded-xl border text-sm font-semibold transition border-slate-800 bg-slate-950 text-slate-400";
-                }
+        // Clock updater
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('current-time').innerText = now.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }) + ' ' + now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function switchTab(tabId) {
+            state.activeTab = tabId;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+
+            // Desktop nav styles
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = "nav-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-roseGold-600 hover:bg-roseGold-50 transition-colors flex items-center space-x-2";
             });
-            const activo = event.target;
-            activo.className = "py-3 px-4 rounded-xl border text-sm font-semibold transition border-orange-500 bg-orange-500/10 text-orange-400";
-            
-            const seccionPuertos = document.getElementById('seccion-puertos');
-            if (pais === 'China') {
-                seccionPuertos.classList.remove('hidden');
-            } else {
-                seccionPuertos.classList.add('hidden');
-            }
-        }
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if(activeNav) activeNav.className = "nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-roseGold-500 text-white shadow-sm flex items-center space-x-2";
 
-        function togglePuerto(checkbox) {
-            if(checkbox.checked) {
-                if(!puertosSeleccionados.includes(checkbox.value)) puertosSeleccionados.push(checkbox.value);
-            } else {
-                puertosSeleccionados = puertosSeleccionados.filter(p => p !== checkbox.value);
-            }
-        }
-
-        function setTipoCarga(tipo) {
-            tipoCarga = tipo;
-            ['20GP', '40GP', '40HQ', 'LCL'].forEach(t => {
-                const card = document.getElementById(`card-${t}`);
-                card.className = "cursor-pointer p-5 rounded-2xl border border-slate-800 bg-slate-950";
+            // Mobile nav styles
+            document.querySelectorAll('.m-nav-btn').forEach(btn => {
+                btn.className = "m-nav-btn flex flex-col items-center text-gray-500 text-xs font-medium px-2 py-1";
             });
-            document.getElementById(`card-${tipo}`).className = "cursor-pointer p-5 rounded-2xl border border-orange-500 bg-orange-500/10";
-            
-            const lclContainer = document.getElementById('input-lcl-container');
-            if(tipo === 'LCL') {
-                lclContainer.classList.remove('hidden');
-            } else {
-                lclContainer.classList.add('hidden');
-            }
+            const activeMNav = document.getElementById(`m-nav-${tabId}`);
+            if(activeMNav) activeMNav.className = "m-nav-btn flex flex-col items-center text-roseGold-600 text-xs font-medium px-2 py-1";
+
+            // Refresh view data
+            if(tabId === 'pos') renderPOSProducts();
+            if(tabId === 'inventory') renderInventoryTable();
+            if(tabId === 'history') renderSalesHistory();
+            if(tabId === 'dashboard') renderDashboard();
         }
 
-        function enviarCotizacion(e) {
-            e.preventDefault();
-            const metrosLCL = document.getElementById('metros-lcl').value;
-            const destino = document.getElementById('destino-bolivia').value;
-            const mercancia = document.getElementById('tipo-mercancia').value || 'Por especificar';
-
-            let detalleCarga = tipoCarga === 'LCL' ? `Consolidado LCL (${metrosLCL || '0'} m³)` : `Contenedor ${tipoCarga}`;
-            let puertosTexto = paisOrigen === 'China' ? `Puertos: ${puertosSeleccionados.join(', ') || 'A definir'}` : `Origen: ${paisOrigen}`;
-
-            const mensaje = `Hola CF Global Cargo, deseo cotizar flete internacional:\n- Origen: ${paisOrigen} (${puertosTexto})\n- Modalidad: ${detalleCarga}\n- Destino en Bolivia: ${destino}\n- Mercancía: ${mercancia}`;
-            window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(mensaje)}`, '_blank');
-        }
-
-        function filtrarCategoria(cat) {
-            categoriaActual = cat;
-            document.querySelectorAll('.cat-btn').forEach(b => {
-                b.className = "cat-btn bg-slate-900 text-slate-400 px-4 py-2 rounded-xl text-xs font-bold transition";
+        function filterCategory(cat) {
+            state.currentCategory = cat;
+            document.querySelectorAll('.cat-pill').forEach(btn => {
+                btn.className = "cat-pill px-3.5 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-roseGold-100 whitespace-nowrap transition-all";
             });
-            event.target.className = "cat-btn bg-orange-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition";
-            renderProductos();
+            document.getElementById(`cat-${cat}`).className = "cat-pill px-3.5 py-2 rounded-xl text-xs font-semibold bg-roseGold-500 text-white whitespace-nowrap shadow-sm transition-all";
+            renderPOSProducts();
         }
 
-        function renderProductos() {
-            const grid = document.getElementById('grid-productos');
-            const filtrados = categoriaActual === 'todos' ? productos : productos.filter(p => p.categoria === categoriaActual);
+        function filterProducts() {
+            renderPOSProducts();
+        }
+
+        function renderPOSProducts() {
+            const query = document.getElementById('pos-search').value.toLowerCase();
+            const grid = document.getElementById('pos-product-grid');
             
-            grid.innerHTML = filtrados.map(p => `
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between">
-                    <img src="${p.imagen}" alt="${p.nombre}" class="w-full h-48 object-cover">
-                    <div class="p-5 flex flex-col flex-grow justify-between">
-                        <div>
-                            <span class="text-[10px] uppercase font-bold text-orange-400 bg-orange-500/10 px-2.5 py-1 rounded-full">${p.categoria}</span>
-                            <h3 class="font-bold text-base mt-2 mb-3 text-slate-100">${p.nombre}</h3>
+            const filtered = state.products.filter(p => {
+                const matchCat = state.currentCategory === 'Todos' || p.category === state.currentCategory;
+                const matchQuery = p.name.toLowerCase().includes(query) || p.sku.toLowerCase().includes(query);
+                return matchCat && matchQuery;
+            });
+
+            if(filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400 text-xs">No se encontraron productos</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(p => `
+                <div onclick="addToCart(${p.id})" class="bg-white p-3 rounded-2xl shadow-sm border border-roseGold-100 hover:border-roseGold-400 cursor-pointer transition-all flex flex-col justify-between group relative overflow-hidden">
+                    ${p.stock === 0 ? '<div class="absolute inset-0 bg-white/70 backdrop-blur-[1px] flex items-center justify-center z-10"><span class="bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase">Agotado</span></div>' : ''}
+                    <div>
+                        <div class="h-28 w-full rounded-xl bg-roseGold-50 overflow-hidden mb-2.5 relative">
+                            <img src="${p.image || 'https://placehold.co/300x300/fbe8e6/bc4e42?text=Beauty'}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/300x300/fbe8e6/bc4e42?text=Beauty'">
+                            <span class="absolute top-2 right-2 bg-white/90 backdrop-blur-sm text-[10px] font-bold px-2 py-0.5 rounded-full text-roseGold-700 shadow-sm">${p.category}</span>
                         </div>
-                        <div class="border-t border-slate-800 pt-4 mt-2">
-                            <div class="flex justify-between text-sm mb-3">
-                                <span class="text-slate-400">Por Unidad: <strong class="text-white">${p.precioUnidad}</strong></span>
-                                <span class="text-slate-400">Caja (${p.unidadesPorCaja} u): <strong class="text-orange-400">${p.precioCaja}</strong></span>
-                            </div>
-                            <button onclick="cotizarProducto(${p.id})" class="w-full bg-slate-800 hover:bg-orange-500 hover:text-white text-slate-200 font-bold py-2.5 rounded-xl text-xs transition">
-                                Pedir por WhatsApp
-                            </button>
-                        </div>
+                        <h4 class="font-semibold text-gray-800 text-xs line-clamp-2 mb-1 group-hover:text-roseGold-600 transition-colors">${p.name}</h4>
+                        <span class="text-[10px] text-gray-400">SKU: ${p.sku}</span>
+                    </div>
+                    <div class="flex justify-between items-center mt-3 pt-2 border-t border-gray-50">
+                        <span class="font-bold text-sm text-gray-900">$${p.price.toFixed(2)}</span>
+                        <span class="text-[10px] font-medium px-2 py-0.5 rounded-full ${p.stock > 5 ? 'bg-emerald-50 text-emerald-600' : p.stock > 0 ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-600'}">Stock: ${p.stock}</span>
                     </div>
                 </div>
             `).join('');
         }
 
-        function cotizarProducto(id) {
-            const p = productos.find(prod => prod.id === id);
-            const mensaje = `Hola CF Global Cargo, deseo adquirir del Catálogo Bolivia:\n- Producto: ${p.nombre}\n- Presentación: Caja completa (${p.unidadesPorCaja} unidades por ${p.precioCaja}) o Unidad (${p.precioUnidad}). Por favor confirmar disponibilidad.`;
-            window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(mensaje)}`, '_blank');
+        function addToCart(productId) {
+            const product = state.products.find(p => p.id === productId);
+            if(!product || product.stock <= 0) {
+                showToast("Producto sin stock disponible", "error");
+                return;
+            }
+
+            const existing = state.cart.find(item => item.id === productId);
+            if(existing) {
+                if(existing.qty >= product.stock) {
+                    showToast("No hay más stock disponible", "error");
+                    return;
+                }
+                existing.qty++;
+            } else {
+                state.cart.push({ id: product.id, name: product.name, price: product.price, qty: 1, stock: product.stock });
+            }
+
+            saveState();
+            renderCart();
         }
 
-        renderProductos();
+        function updateCartQty(productId, change) {
+            const item = state.cart.find(i => i.id === productId);
+            if(!item) return;
+
+            const product = state.products.find(p => p.id === productId);
+            const newQty = item.qty + change;
+
+            if(newQty > product.stock) {
+                showToast("Stock máximo alcanzado", "error");
+                return;
+            }
+
+            if(newQty <= 0) {
+                state.cart = state.cart.filter(i => i.id !== productId);
+            } else {
+                item.qty = newQty;
+            }
+
+            saveState();
+            renderCart();
+        }
+
+        function removeFromCart(productId) {
+            state.cart = state.cart.filter(i => i.id !== productId);
+            saveState();
+            renderCart();
+        }
+
+        function clearCart() {
+            state.cart = [];
+            saveState();
+            renderCart();
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items-container');
+            const badge = document.getElementById('cart-count-badge');
+            const checkoutBtn = document.getElementById('checkout-btn');
+
+            const totalItems = state.cart.reduce((sum, item) => sum + item.qty, 0);
+            badge.innerText = `${totalItems} items`;
+
+            if(state.cart.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full text-gray-400 py-12">
+                        <i class="fa-solid fa-bag-shopping text-4xl mb-3 text-roseGold-200"></i>
+                        <p class="text-sm font-medium">El carrito está vacío</p>
+                        <p class="text-xs text-gray-400 mt-1">Selecciona productos para comenzar</p>
+                    </div>
+                `;
+                checkoutBtn.disabled = true;
+                checkoutBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                container.innerHTML = state.cart.map(item => `
+                    <div class="flex items-center justify-between py-2.5">
+                        <div class="flex-grow pr-2">
+                            <h5 class="text-xs font-semibold text-gray-800 line-clamp-1">${item.name}</h5>
+                            <span class="text-[11px] text-gray-500">$${item.price.toFixed(2)} c/u</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-gray-50">
+                                <button onclick="updateCartQty(${item.id}, -1)" class="px-2 py-1 text-gray-600 hover:bg-gray-200 text-xs"><i class="fa-solid fa-minus"></i></button>
+                                <span class="px-2 text-xs font-semibold text-gray-800">${item.qty}</span>
+                                <button onclick="updateCartQty(${item.id}, 1)" class="px-2 py-1 text-gray-600 hover:bg-gray-200 text-xs"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                            <button onclick="removeFromCart(${item.id})" class="text-gray-400 hover:text-red-500 p-1 text-xs"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+                checkoutBtn.disabled = false;
+                checkoutBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+
+            updateCartCalculations();
+        }
+
+        function calculateCartTotals() {
+            const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const discountPercent = parseFloat(document.getElementById('cart-discount').value) || 0;
+            const discountAmount = subtotal * (discountPercent / 100);
+            const taxable = subtotal - discountAmount;
+            const tax = taxable * 0.13; // 13% IVA
+            const total = taxable + tax;
+
+            return { subtotal, discountAmount, tax, total };
+        }
+
+        function updateCartCalculations() {
+            const { subtotal, discountAmount, tax, total } = calculateCartTotals();
+            document.getElementById('cart-subtotal').innerText = `$${subtotal.toFixed(2)}`;
+            document.getElementById('cart-tax').innerText = `$${tax.toFixed(2)}`;
+            document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
+        }
+
+        function openCheckoutModal() {
+            const { total } = calculateCartTotals();
+            document.getElementById('modal-total-display').innerText = `$${total.toFixed(2)}`;
+            document.getElementById('cash-tendered').value = total.toFixed(2);
+            calculateChange();
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
+        function setPaymentMethod(method) {
+            state.currentPaymentMethod = method;
+            document.querySelectorAll('.pay-method-btn').forEach(btn => {
+                btn.className = "pay-method-btn py-2.5 px-3 rounded-xl text-xs font-semibold border-2 border-gray-200 bg-white text-gray-600 flex flex-col items-center space-y-1 transition-all";
+            });
+            const selectedBtn = document.getElementById(`pay-${method.toLowerCase()}`);
+            if(selectedBtn) selectedBtn.className = "pay-method-btn py-2.5 px-3 rounded-xl text-xs font-semibold border-2 border-roseGold-500 bg-roseGold-50 text-roseGold-700 flex flex-col items-center space-y-1 transition-all";
+
+            const cashSection = document.getElementById('cash-input-section');
+            if(method === 'Efectivo') {
+                cashSection.classList.remove('hidden');
+            } else {
+                cashSection.classList.add('hidden');
+            }
+        }
+
+        function calculateChange() {
+            const { total } = calculateCartTotals();
+            const tendered = parseFloat(document.getElementById('cash-tendered').value) || 0;
+            const change = tendered - total;
+            document.getElementById('cash-change').innerText = `$${change >= 0 ? change.toFixed(2) : '0.00'}`;
+        }
+
+        function processCheckout() {
+            if(state.cart.length === 0) return;
+
+            const { subtotal, discountAmount, tax, total } = calculateCartTotals();
+
+            // Deduct stock
+            state.cart.forEach(cartItem => {
+                const prod = state.products.find(p => p.id === cartItem.id);
+                if(prod) {
+                    prod.stock = Math.max(0, prod.stock - cartItem.qty);
+                }
+            });
+
+            const transaction = {
+                id: 'GG-' + Math.floor(100000 + Math.random() * 900000),
+                date: new Date().toLocaleString('es-ES'),
+                items: [...state.cart],
+                subtotal,
+                discount: discountAmount,
+                tax,
+                total,
+                paymentMethod: state.currentPaymentMethod
+            };
+
+            state.sales.unshift(transaction);
+            state.cart = [];
+            saveState();
+            closeCheckoutModal();
+
+            // Show Receipt Modal
+            showReceipt(transaction);
+            renderPOSProducts();
+            renderCart();
+            showToast("Venta completada con éxito");
+        }
+
+        function showReceipt(tx) {
+            document.getElementById('rec-id').innerText = tx.id;
+            document.getElementById('rec-date').innerText = tx.date;
+            document.getElementById('rec-payment').innerText = tx.paymentMethod;
+            document.getElementById('rec-subtotal').innerText = `$${tx.subtotal.toFixed(2)}`;
+            document.getElementById('rec-discount').innerText = `-$${tx.discount.toFixed(2)}`;
+            document.getElementById('rec-tax').innerText = `$${tx.tax.toFixed(2)}`;
+            document.getElementById('rec-total').innerText = `$${tx.total.toFixed(2)}`;
+
+            const itemsContainer = document.getElementById('rec-items-list');
+            itemsContainer.innerHTML = tx.items.map(i => `
+                <div class="flex justify-between">
+                    <span>${i.qty}x ${i.name}</span>
+                    <span>$${(i.price * i.qty).toFixed(2)}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('receipt-modal').classList.remove('hidden');
+        }
+
+        function closeReceiptModal() {
+            document.getElementById('receipt-modal').classList.add('hidden');
+        }
+
+        function renderInventoryTable() {
+            const query = document.getElementById('inventory-search').value.toLowerCase();
+            const tbody = document.getElementById('inventory-table-body');
+
+            const filtered = state.products.filter(p => p.name.toLowerCase().includes(query) || p.sku.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
+
+            if(filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-gray-400 text-xs">No se encontraron productos en el inventario</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(p => {
+                let badgeClass = "bg-emerald-50 text-emerald-600";
+                let badgeText = "En Stock";
+                if(p.stock === 0) {
+                    badgeClass = "bg-red-50 text-red-600";
+                    badgeText = "Agotado";
+                } else if(p.stock <= 5) {
+                    badgeClass = "bg-amber-50 text-amber-600";
+                    badgeText = "Stock Bajo";
+                }
+
+                return `
+                    <tr class="hover:bg-roseGold-50/40 transition-colors">
+                        <td class="py-3 px-4 flex items-center space-x-3">
+                            <img src="${p.image || 'https://placehold.co/100x100/fbe8e6/bc4e42?text=Beauty'}" alt="" class="w-10 h-10 rounded-lg object-cover border border-roseGold-100" onerror="this.src='https://placehold.co/100x100/fbe8e6/bc4e42?text=Beauty'">
+                            <span class="font-semibold text-gray-800 text-xs">${p.name}</span>
+                        </td>
+                        <td class="py-3 px-4 text-xs font-mono text-gray-500">${p.sku}</td>
+                        <td class="py-3 px-4 text-xs"><span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium">${p.category}</span></td>
+                        <td class="py-3 px-4 text-xs text-right font-bold text-gray-900">$${p.price.toFixed(2)}</td>
+                        <td class="py-3 px-4 text-xs text-center font-semibold text-gray-700">${p.stock}</td>
+                        <td class="py-3 px-4 text-center"><span class="text-[10px] font-semibold px-2.5 py-1 rounded-full ${badgeClass}">${badgeText}</span></td>
+                        <td class="py-3 px-4 text-center space-x-1">
+                            <button onclick="openProductModal(${p.id})" class="p-1.5 bg-roseGold-50 text-roseGold-600 hover:bg-roseGold-100 rounded-lg transition-colors text-xs" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteProduct(${p.id})" class="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors text-xs" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openProductModal(productId = null) {
+            const modal = document.getElementById('product-modal');
+            const title = document.getElementById('product-modal-title');
+            const form = document.getElementById('product-form');
+            form.reset();
+
+            if(productId) {
+                title.innerHTML = `<i class="fa-solid fa-pen-to-square text-roseGold-600"></i><span>Editar Producto</span>`;
+                const p = state.products.find(item => item.id === productId);
+                if(p) {
+                    document.getElementById('prod-edit-id').value = p.id;
+                    document.getElementById('prod-name').value = p.name;
+                    document.getElementById('prod-sku').value = p.sku;
+                    document.getElementById('prod-category').value = p.category;
+                    document.getElementById('prod-price').value = p.price;
+                    document.getElementById('prod-stock').value = p.stock;
+                    document.getElementById('prod-image').value = p.image || '';
+                }
+            } else {
+                title.innerHTML = `<i class="fa-solid fa-box text-roseGold-600"></i><span>Nuevo Producto</span>`;
+                document.getElementById('prod-edit-id').value = '';
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeProductModal() {
+            document.getElementById('product-modal').classList.add('hidden');
+        }
+
+        function saveProduct(event) {
+            event.preventDefault();
+            const editId = document.getElementById('prod-edit-id').value;
+            const name = document.getElementById('prod-name').value;
+            const sku = document.getElementById('prod-sku').value;
+            const category = document.getElementById('prod-category').value;
+            const price = parseFloat(document.getElementById('prod-price').value);
+            const stock = parseInt(document.getElementById('prod-stock').value);
+            const image = document.getElementById('prod-image').value;
+
+            if(editId) {
+                const p = state.products.find(item => item.id == editId);
+                if(p) {
+                    p.name = name;
+                    p.sku = sku;
+                    p.category = category;
+                    p.price = price;
+                    p.stock = stock;
+                    p.image = image;
+                }
+                showToast("Producto actualizado con éxito");
+            } else {
+                const newProduct = {
+                    id: Date.now(),
+                    name,
+                    sku,
+                    category,
+                    price,
+                    stock,
+                    image
+                };
+                state.products.push(newProduct);
+                showToast("Producto creado con éxito");
+            }
+
+            saveState();
+            closeProductModal();
+            renderInventoryTable();
+        }
+
+        function deleteProduct(productId) {
+            state.products = state.products.filter(p => p.id !== productId);
+            saveState();
+            renderInventoryTable();
+            showToast("Producto eliminado");
+        }
+
+        function renderSalesHistory() {
+            const tbody = document.getElementById('sales-history-body');
+            if(state.sales.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-gray-400 text-xs">No hay ventas registradas aún</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = state.sales.map(tx => `
+                <tr class="hover:bg-roseGold-50/40 transition-colors">
+                    <td class="py-3.5 px-4 font-mono text-xs font-bold text-roseGold-700">${tx.id}</td>
+                    <td class="py-3.5 px-4 text-xs text-gray-600">${tx.date}</td>
+                    <td class="py-3.5 px-4 text-xs text-gray-700">${tx.items.reduce((sum, i) => sum + i.qty, 0)} items (${tx.items.map(i => i.name).slice(0, 2).join(', ')}${tx.items.length > 2 ? '...' : ''})</td>
+                    <td class="py-3.5 px-4 text-xs"><span class="bg-rose-50 text-roseGold-700 font-semibold px-2.5 py-0.5 rounded-full">${tx.paymentMethod}</span></td>
+                    <td class="py-3.5 px-4 text-xs text-right font-bold text-gray-900">$${tx.total.toFixed(2)}</td>
+                    <td class="py-3.5 px-4 text-center">
+                        <button onclick="showReceipt(state.sales.find(s => s.id === '${tx.id}'))" class="p-1.5 bg-roseGold-50 text-roseGold-600 hover:bg-roseGold-100 rounded-lg transition-colors text-xs" title="Ver Recibo"><i class="fa-solid fa-receipt"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function clearSalesHistory() {
+            state.sales = [];
+            saveState();
+            renderSalesHistory();
+            showToast("Historial de ventas limpiado");
+        }
+
+        function renderDashboard() {
+            // Sales Today (simulated as all sales for demo, or today's date match)
+            const totalSalesAmount = state.sales.reduce((sum, s) => sum + s.total, 0);
+            const totalItemsSold = state.sales.reduce((sum, s) => sum + s.items.reduce((isum, i) => isum + i.qty, 0), 0);
+            const totalTransactions = state.sales.length;
+            const inventoryValue = state.products.reduce((sum, p) => sum + (p.price * p.stock), 0);
+
+            document.getElementById('stat-sales-today').innerText = `$${totalSalesAmount.toFixed(2)}`;
+            document.getElementById('stat-items-sold').innerText = totalItemsSold;
+            document.getElementById('stat-transactions').innerText = totalTransactions;
+            document.getElementById('stat-inventory-val').innerText = `$${inventoryValue.toFixed(2)}`;
+
+            // Low stock list
+            const lowStockList = document.getElementById('low-stock-list');
+            const lowStockItems = state.products.filter(p => p.stock <= 5);
+            if(lowStockItems.length === 0) {
+                lowStockList.innerHTML = `<p class="text-xs text-gray-400 py-4 text-center">No hay alertas de stock bajo</p>`;
+            } else {
+                lowStockList.innerHTML = lowStockItems.map(p => `
+                    <div class="flex justify-between items-center p-2.5 bg-amber-50/50 border border-amber-100 rounded-xl">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-circle-exclamation text-amber-500 text-xs"></i>
+                            <span class="text-xs font-semibold text-gray-800">${p.name}</span>
+                        </div>
+                        <span class="text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">Stock: ${p.stock}</span>
+                    </div>
+                `).join('');
+            }
+
+            // Category breakdown
+            const catStatsList = document.getElementById('category-stats-list');
+            const categories = ['Maquillaje', 'Skincare', 'Capilar', 'Perfumes'];
+            catStatsList.innerHTML = categories.map(cat => {
+                const count = state.products.filter(p => p.category === cat).length;
+                const value = state.products.filter(p => p.category === cat).reduce((sum, p) => sum + (p.price * p.stock), 0);
+                return `
+                    <div class="flex justify-between items-center p-2.5 bg-roseGold-50/40 border border-roseGold-100 rounded-xl">
+                        <span class="text-xs font-semibold text-gray-800">${cat}</span>
+                        <div class="text-right">
+                            <span class="text-xs font-bold text-roseGold-700">${count} productos</span>
+                            <span class="text-[10px] text-gray-500 block">Valor: $${value.toFixed(2)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function resetData() {
+            state.products = DEFAULT_PRODUCTS;
+            state.cart = [];
+            state.sales = [];
+            saveState();
+            switchTab(state.activeTab);
+            showToast("Datos restaurados a valores de fábrica");
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toast-message');
+            const icon = document.getElementById('toast-icon');
+
+            msg.innerText = message;
+            if(type === 'error') {
+                icon.className = "fa-solid fa-circle-exclamation text-red-400";
+            } else {
+                icon.className = "fa-solid fa-circle-check text-emerald-400";
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Initial render on load
+        renderPOSProducts();
+        renderCart();
     </script>
 </body>
 </html>
